@@ -8,6 +8,7 @@ var redis = require('redis');
 var RedisClient = redis.createClient();
 //Models Requires
 var Post = require('../models/post_model');
+var User = require('../models/user_model');
 
 router.get('/api/post/img/:_id',function (request,response){
 	var postId = request.params._id;
@@ -44,7 +45,7 @@ router.post('/api/post/:token',function (request,response){
 					var audio = false;
 					var video = false;
 					
-					if(request.files.img != undefined){		   
+					if(request.files.image != undefined){		   
 						img = true;
 					}
 					if(request.files.video != undefined){		
@@ -55,9 +56,9 @@ router.post('/api/post/:token',function (request,response){
 					}
 
 					var ext_image = undefined;
-					if(request.files.img != undefined){
+					if(request.files.image != undefined){
 						var fs = require('fs')
-						var path_img = request.files.img.path;
+						var path_img = request.files.image.path;
 						var is = fs.createReadStream(path_img);
 						ext_image = path.extname(is.path);
 					}
@@ -79,10 +80,10 @@ router.post('/api/post/:token',function (request,response){
 						var flag =  request.body.img;
 						console.log('Flag is '+flag);
 						
-						if(request.files.img != undefined){	   
+						if(request.files.image != undefined){	   
 							console.log('Post Id: '+save._id);
 							var fs = require('fs')
-							var path_img = request.files.img.path;   
+							var path_img = request.files.image.path;   
 							var is = fs.createReadStream(path_img);
 							var ext = path.extname(is.path);
 							var newPath =  './public/img/postPhotos/'+save._id+ ext;
@@ -95,10 +96,10 @@ router.post('/api/post/:token',function (request,response){
 							})
 						}
 						console.log('Succesfully Added Post in User '+request.body.id+' by API app');
-						response.send(200);
+						response.sendStatus(200);
 					})
 				})
-			});		
+			});
 		} 
 		else{
 			response.sendStatus(404);

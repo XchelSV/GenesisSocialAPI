@@ -8,8 +8,9 @@ var RedisClient = redis.createClient();
 var  User = require('../models/user_model');
 
 router.post('/api/login',function (request,response){
-			
-	User.findOne({name : request.body.name}, function (err , user){
+	
+	console.log(request.body)
+	User.findOne({email : request.body.email}, function (err , user){
 		
 		if (err) throw err;		
 		if(user != undefined){
