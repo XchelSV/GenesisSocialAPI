@@ -10,6 +10,75 @@ var RedisClient = redis.createClient();
 var Post = require('../models/post_model');
 var User = require('../models/user_model');
 
+router.post('/api/post/like',function (request,response){
+	
+	var id = request.body.phoneId;
+	var postId = request.body.postId;
+	var flag = true;
+
+	Post.findById(postId,function (err,doc){
+		for (var i = 0; i < doc.like.length; i++) {
+			if (id == doc.like[i]){
+				flag = false;
+				break;
+			}
+		};
+		if (flag){
+			Post.update({_id:postId},{$push: {'like':id}},{upsert:true},function(err){        
+				if(err){
+					console.log(err);
+				}
+				else{
+					console.log("Successfully like Added from user: "+id);
+					response.sendStatus(200);
+				}
+			})
+		}
+		else{
+			doc.like.pull(id);
+			doc.save(function (err){
+				if (err) {throw err};
+				console.log('Like from user '+id+' was removed')
+				response.sendStatus(202);
+			})
+		}
+	})
+})
+
+router.post('/api/post/pray',function (request,response){
+	var id = request.body.phoneId;
+	var postId = request.body.postId;
+	var flag = true;
+
+	Post.findById(postId,function (err,doc){
+		for (var i = 0; i < doc.pray4You.length; i++) {
+			if (id == doc.pray4You[i]){
+				flag = false;
+				break;
+			}
+		};
+		if (flag){
+			Post.update({_id:postId},{$push: {'pray4You':id}},{upsert:true},function(err){	        
+				if(err){
+					console.log(err);
+				}
+				else{
+					console.log("Successfully pray4You Added from user: "+id);
+					response.sendStatus(200);
+				}
+			})
+		}
+		else{
+			doc.pray4You.pull(id);
+			doc.save(function (err){
+				if (err) {throw err};
+				console.log('Pray4You from user '+id+' was removed')
+				response.sendStatus(202);
+			})
+		}
+	})
+})
+
 router.get('/api/post/img/:_id',function (request,response){
 	var postId = request.params._id;
 	Post.findById(postId, function (err,doc){
@@ -28,7 +97,7 @@ router.get('/api/post',function (request,response){
 	Post.find('','',{sort:{date:-1}},function (err, docs){
 		if (err) throw err;
 		response.send(docs);
-	});
+	})
 })
 
 
@@ -99,78 +168,10 @@ router.post('/api/post/:token',function (request,response){
 						response.sendStatus(200);
 					})
 				})
-			});
+			})
 		} 
 		else{
 			response.sendStatus(404);
-		}
-	});
-})
-
-router.post('/api/post/like',function (request,response){
-	var id = request.body.phoneId;
-	var postId = request.body.postId;
-	var flag = true;
-
-	Post.findById(postId,function (err,doc){
-		for (var i = 0; i < doc.like.length; i++) {
-			if (id == doc.like[i]){
-				flag = false;
-				break;
-			}
-		};
-		if (flag){
-			Post.update({_id:postId},{$push: {'like':id}},{upsert:true},function(err){        
-				if(err){
-					console.log(err);
-				}
-				else{
-					console.log("Successfully like Added from user: "+id);
-					response.sendStatus(200);
-				}
-			})
-		}
-		else{
-			doc.like.pull(id);
-			doc.save(function (err){
-				if (err) {throw err};
-				console.log('Like from user '+id+' was removed')
-				response.sendStatus(202);
-			})
-		}
-	})
-})
-
-router.post('/api/post/pray',function (request,response){
-	var id = request.body.phoneId;
-	var postId = request.body.postId;
-	var flag = true;
-
-	Post.findById(postId,function (err,doc){
-		for (var i = 0; i < doc.pray4You.length; i++) {
-			if (id == doc.pray4You[i]){
-				flag = false;
-				break;
-			}
-		};
-		if (flag){
-			Post.update({_id:postId},{$push: {'pray4You':id}},{upsert:true},function(err){	        
-				if(err){
-					console.log(err);
-				}
-				else{
-					console.log("Successfully pray4You Added from user: "+id);
-					response.sendStatus(200);
-				}
-			})
-		}
-		else{
-			doc.pray4You.pull(id);
-			doc.save(function (err){
-				if (err) {throw err};
-				console.log('Pray4You from user '+id+' was removed')
-				response.sendStatus(202);
-			})
 		}
 	})
 })

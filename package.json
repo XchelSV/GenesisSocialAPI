@@ -20,7 +20,8 @@
     "morgan": "^1.6.1",
     "pug": "^2.0.0-rc.1",
     "redis": "^2.7.1",
-    "serve-favicon": "^2.3.2"
+    "serve-favicon": "^2.3.2",
+    "socket.io": "^2.0.1"
   },
   "devDependencies": {
     "eslint": "^3.19.0",
