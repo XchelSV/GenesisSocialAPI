@@ -11,7 +11,8 @@ var mongoose = require('mongoose'),
 	    birthday:{ type : Date },
 	    biography: { type : String },
 	    servicePlace : { type : String},
-	    type:{ type : Boolean}
+	    type:{ type : Boolean},
+	    active:{type:Boolean}
 	});
 
 
