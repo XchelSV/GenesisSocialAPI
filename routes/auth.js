@@ -39,6 +39,23 @@ router.post('/api/login',function (request,response){
 		}
 	})
 })
+
+router.get('/api/session/user/id/:token',function (request, response){
+	var token = request.params.token;
+	RedisClient.exists(token, function (err, reply){
+		if(reply===1){
+			var userId;
+			RedisClient.get(token, function (err,value){
+				userId = value;
+				response.send(userId);
+			})
+		}
+		else{
+			response.sendStatus(401);
+		}
+	})
+
+})
 		
 router.get('/api/logout/:token',function (request, response){
 
