@@ -8,6 +8,7 @@ var RedisClient = redis.createClient();
 
 //Models Requires
 var Devotional = require('../models/devotional_model');
+var User = require('../models/user_model');
 
 
 router.get('/api/devotional',function (request,response){
