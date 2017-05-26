@@ -87,4 +87,32 @@ router.get('/api/user/img/:_id',function (request,response){
 	response.sendFile(path.join(__dirname, '../public/img/userPhotos/'+userId+'.jpg'));
 })
 
+router.delete('/api/user/:_id/:token',function (request,response){
+	var id = request.params._id;
+	var token = request.params.token;
+
+	RedisClient.exists(token, function (err, reply){
+		if(reply===1){
+			RedisClient.get(token, function (err,userId){
+				User.findById(userId, function (err,user){
+					if (user.type === true){
+						User.remove({_id:id},function (err,deleted){
+							console.log('its deleted');
+							var fs = require('fs');
+							fs.unlinkSync('./public/img/userPhotos/'+id+'.jpg');
+							response.sendStatus(200);
+						})
+					}
+					else{
+						response.sendStatus(401);
+					}
+				})						
+			})
+		}
+		else{
+			response.sendStatus(401);
+		}
+	})		
+})
+
 module.exports = router;
