@@ -34,6 +34,7 @@ router.get('/api/devotional/video/:_id',function (request,response){
 
 router.post('/api/devotional/:token',function (request,response){
 	var token = request.params.token;
+	console.log(request);
 	RedisClient.exists(token, function (err, reply){
 		if(reply===1){
 			var date = new Date();
@@ -69,31 +70,31 @@ router.post('/api/devotional/:token',function (request,response){
 					is.pipe(os)
 					is.on('end', function() {
 						//eliminamos el archivo temporal
-						fs.unlink(path);
+						fs.unlinkSync(path);
 					})
 				}
 				if(audio){
 					var fs = require('fs')
-					var path = request.files.audio.path;
+					var path_audio = request.files.audio.path;
 					var newPath =  './public/audio/devotionalAudios/'+saved._id+'.mp3';
-					var is = fs.createReadStream(path);
+					var is = fs.createReadStream(path_audio);
 					var os = fs.createWriteStream(newPath);
 					is.pipe(os)
 					is.on('end', function() {
 						//eliminamos el archivo temporal
-						fs.unlink(path);
+						fs.unlinkSync(path_audio);
 					})
 				}
 				if(video){
 					var fs = require('fs')
-					var path = request.files.video.path;
+					var path_video = request.files.video.path;
 					var newPath =  './public/video/devotionalVideos/'+saved._id+'.mp4';
-					var is = fs.createReadStream(path);
+					var is = fs.createReadStream(path_video);
 					var os = fs.createWriteStream(newPath);
 					is.pipe(os)
 					is.on('end', function() {
 						//eliminamos el archivo temporal
-						fs.unlink(path);
+						fs.unlinkSync(path_video);
 					})
 				}
 				console.log('Devotional saved by API App: '+saved._id);
