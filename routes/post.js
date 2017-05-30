@@ -184,21 +184,23 @@ router.delete('/api/post/:img/:_id/:token',function (request,response){
 	RedisClient.exists(token, function (err, reply){
 		if(reply===1){					
 			RedisClient.get(token, function (err,userId){
-						
-				Post.findById(id,function (err,post){
-					if (userId === post.user_id){
-						Post.remove({_id:id},function (err,deleted){
-							if (img === 'true' || img === true){
-								console.log('its deleted from API');
-								var fs = require('fs');
-								fs.unlinkSync('./public/img/postPhotos/'+id+post.ext_img);
-							}
-							response.sendStatus(200);
-						})
-					}
-					else{
-						response.sendStatus(401);
-					}
+				
+				User.findById(userId,function (err,user_found){	
+					Post.findById(id,function (err,post){
+						if (userId === post.user_id || user_found.type === true){
+							Post.remove({_id:id},function (err,deleted){
+								if (img === 'true' || img === true){
+									console.log('its deleted from API');
+									var fs = require('fs');
+									fs.unlinkSync('./public/img/postPhotos/'+id+post.ext_img);
+								}
+								response.sendStatus(200);
+							})
+						}
+						else{
+							response.sendStatus(401);
+						}
+					})
 				})
 			})
 		}
