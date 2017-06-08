@@ -35,7 +35,6 @@ router.get('/api/devotional/video/:_id',function (request,response){
 
 router.post('/api/devotional/:token',function (request,response){
 	var token = request.params.token;
-	console.log(request);
 	RedisClient.exists(token, function (err, reply){
 		if(reply===1){
 			var date = new Date();
@@ -100,6 +99,83 @@ router.post('/api/devotional/:token',function (request,response){
 				}
 				console.log('Devotional saved by API App: '+saved._id);
 				response.sendStatus(200);
+			})
+		}
+		else{
+			response.sendStatus(404);
+		}
+	})
+})
+
+router.put('/api/devotional/:id/:token',function (request,response){
+	var token = request.params.token;
+	var devotionalId = request.params.id;
+	RedisClient.exists(token, function (err, reply){
+		if(reply===1){
+			var date = new Date();
+			var img = false;
+			var video = false;
+			var audio = false;		
+			if(request.files.img != undefined){				   
+				img = true;
+			}
+			if(request.files.video != undefined){			
+				video = true;	   
+			}
+			if(request.files.audio != undefined){				   
+				audio = true;
+			}
+			Devotional.findById(devotionalId, function (err,updatedDevotional){			
+				
+				updatedDevotional.title = request.body.title;
+				updatedDevotional.body = request.body.body;
+				updatedDevotional.date = date;
+				updatedDevotional.showDate = request.body.showDate;
+				updatedDevotional.img = img;
+				updatedDevotional.video = video;
+				updatedDevotional.audio = audio;
+				
+				updatedDevotional.save(function (err,saved){
+					if (err) throw err;
+					if(img){
+						var fs = require('fs')
+						var path = request.files.img.path;
+						var newPath =  './public/img/devotionalPhotos/'+saved._id+'.jpg';
+						var is = fs.createReadStream(path);
+						var os = fs.createWriteStream(newPath);
+						is.pipe(os)
+						is.on('end', function() {
+							//eliminamos el archivo temporal
+							fs.unlinkSync(path);
+						})
+					}
+					if(audio){
+						var fs = require('fs')
+						var path_audio = request.files.audio.path;
+						var newPath =  './public/audio/devotionalAudios/'+saved._id+'.mp3';
+						var is = fs.createReadStream(path_audio);
+						var os = fs.createWriteStream(newPath);
+						is.pipe(os)
+						is.on('end', function() {
+							//eliminamos el archivo temporal
+							fs.unlinkSync(path_audio);
+						})
+					}
+					if(video){
+						var fs = require('fs')
+						var path_video = request.files.video.path;
+						var newPath =  './public/video/devotionalVideos/'+saved._id+'.mp4';
+						var is = fs.createReadStream(path_video);
+						var os = fs.createWriteStream(newPath);
+						is.pipe(os)
+						is.on('end', function() {
+							//eliminamos el archivo temporal
+							fs.unlinkSync(path_video);
+						})
+					}
+					console.log('Devotional Updated by API App: '+saved._id);
+					response.sendStatus(200);
+				})
 			})
 		}
 		else{
