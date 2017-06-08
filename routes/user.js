@@ -64,6 +64,66 @@ router.post('/api/user/:token',function (request, response){
 	})
 })
 
+router.post('/api/user/edit/:id/:token',function (request, response){
+	var token = request.params.token;
+	var user_id = request.params.id;
+	RedisClient.exists(token, function (err, reply){
+		if(reply===1){
+			if (request.body.type == '0'){
+				request.body.type = false;
+			}
+			else{
+				request.body.type = true;
+			}
+
+			if (request.body.active == 'on'){
+				request.body.active = true;
+			}
+			else{
+				request.body.active = false;
+			}
+			if (request.body.updateImg == 'on'){
+				request.body.updateImg = true;
+			}
+			else{
+				request.body.updateImg = false;
+			}
+			User.findById(user_id, function (err,userUpdated){
+				userUpdated.name = request.body.name;
+				userUpdated.email = request.body.email;
+				userUpdated.birthday = request.body.birth;
+				userUpdated.biography = request.body.bio;
+				userUpdated.servicePlace = request.body.place;
+				userUpdated.type = request.body.type;
+				userUpdated.active = request.body.active;
+
+				userUpdated.save(function (err, user){
+					if (err) {response.send('Error');}
+					else{
+						if(request.body.updateImg){
+							var fs = require('fs')
+							var path = request.files.photo.path;
+							var newPath =  './public/img/userPhotos/'+user._id+'.jpg';
+							var is = fs.createReadStream(path);
+							var os = fs.createWriteStream(newPath);
+							is.pipe(os)
+							is.on('end', function() {
+								//eliminamos el archivo temporal
+								fs.unlinkSync(path);
+							})
+						}
+						console.log('Updated User');
+						response.redirect('http://genesis.xchelsvz.me/user/list');
+					}
+				})
+			})
+		}
+		else {
+			response.sendStatus(401);
+		}		
+	})
+})
+
 router.get('/api/user',function (request, response){
 	User.find('',function (err, docs){
 		response.send(docs);	
