@@ -15,6 +15,7 @@ var routes_devotional = require('./routes/devotional');
 var routes_post = require('./routes/post');
 var routes_user = require('./routes/user');
 var routes_auth = require('./routes/auth');
+var routes_podcast = require('./routes/podcast');
 
 var app = express();
 //var MongoClient = require('mongodb').MongoClient;
@@ -66,6 +67,7 @@ app.use('/', routes_devotional);
 app.use('/', routes_post);
 app.use('/', routes_user);
 app.use('/', routes_auth);
+app.use('/', routes_podcast);
 
 
 var connStr = 'mongodb://localhost:27017/GenesisAPIDB';
