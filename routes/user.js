@@ -50,7 +50,7 @@ router.post('/api/user/:token',function (request, response){
 							//eliminamos el archivo temporal
 							fs.unlinkSync(path);
 						})
-						response.redirect('http://genesis.xchelsvz.me/user/list');
+						response.redirect('http://genesis.xchelsvz.me/user/list/confirmation');
 					}
 				})
 			}
