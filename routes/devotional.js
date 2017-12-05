@@ -131,9 +131,15 @@ router.put('/api/devotional/:id/:token',function (request,response){
 				updatedDevotional.body = request.body.body;
 				updatedDevotional.date = date;
 				updatedDevotional.showDate = request.body.showDate;
-				updatedDevotional.img = img;
-				updatedDevotional.video = video;
-				updatedDevotional.audio = audio;
+				if(img){
+					updatedDevotional.img = img;
+				}
+				if(video){
+					updatedDevotional.video = video;
+				}
+				if(audio){
+					updatedDevotional.audio = audio;
+				}
 				
 				updatedDevotional.save(function (err,saved){
 					if (err) throw err;
