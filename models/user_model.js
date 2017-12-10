@@ -12,7 +12,8 @@ var mongoose = require('mongoose'),
 	    biography: { type : String },
 	    servicePlace : { type : String},
 	    type:{ type : Boolean},
-	    active:{type:Boolean}
+	    active:{type:Boolean},
+	    url: { type : String}
 	});
 
 

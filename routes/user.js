@@ -35,7 +35,8 @@ router.post('/api/user/:token',function (request, response){
 					biography: request.body.bio,
 					type: request.body.type,
 					servicePlace: request.body.place,
-					active: request.body.active		
+					active: request.body.active,
+					url: request.body.url
 				})
 				NewUser.save(function (err, user){
 					if (err) {response.send('Correo Electronico ya registrado');}
@@ -96,6 +97,7 @@ router.post('/api/user/edit/:id/:token',function (request, response){
 				userUpdated.servicePlace = request.body.place;
 				userUpdated.type = request.body.type;
 				userUpdated.active = request.body.active;
+				userUpdated.url = request.body.url;
 
 				userUpdated.save(function (err, user){
 					if (err) {response.send('Error');}
