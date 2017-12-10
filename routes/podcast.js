@@ -18,6 +18,20 @@ router.get('/api/podcast',function (request,response){
     })
 })
 
+router.get('/api/podcast/:token',function (request,response){
+    var token = request.params.token;
+    RedisClient.exists(token, function (err, reply){
+        if(reply===1){
+            Podcast.find({},'',{sort:{showDate:-1}},function (err,docs){
+                response.send(docs);
+            })
+        }
+        else{
+            response.sendStatus(404);
+        }
+    })
+})
+
 router.get('/api/podcast/audio/:_id',function (request,response){
     var podcastId = request.params._id;  
     response.sendFile(path.join(__dirname, '../public/audio/podcastAudios/'+podcastId+'.mp3'));
