@@ -18,6 +18,20 @@ router.get('/api/devotional',function (request,response){
 	})
 })
 
+router.get('/api/devotional/:token',function (request,response){
+	var token = request.params.token;
+    RedisClient.exists(token, function (err, reply){
+        if(reply===1){
+            Devotional.find({},'',{sort:{showDate:-1}},function (err,docs){
+				response.send(docs);
+			})
+        }
+        else{
+            response.sendStatus(404);
+        }
+    })
+})
+
 router.get('/api/devotional/img/:_id',function (request,response){
 	var devotionalId = request.params._id;	
 	response.sendFile(path.join(__dirname, '../public/img/devotionalPhotos/'+devotionalId+'.jpg'));
