@@ -18,7 +18,7 @@ router.get('/api/devotional',function (request,response){
 	})
 })
 
-router.get('/api/devotional/:token',function (request,response){
+router.get('/api/devotional/admin/:token',function (request,response){
 	var token = request.params.token;
     RedisClient.exists(token, function (err, reply){
         if(reply===1){
